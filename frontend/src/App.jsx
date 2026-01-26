@@ -1,14 +1,19 @@
-import { useState } from 'react'
-import './App.css'
-import ApiStatus from './components/ApiStatus'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardOne from "./pages/dashboardOne";
+import DashboardTwo from "./pages/dashboardTwo";
+import "./App.css";
 
 function App() {
   return (
-    <>
+    <BrowserRouter>
       <h1>Smart Email Solutions</h1>
-      <ApiStatus />
-    </>
-  )
+
+      <Routes>
+        <Route path="/" element={<DashboardOne />} />
+        <Route path="/dashboard-two" element={<DashboardTwo />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
