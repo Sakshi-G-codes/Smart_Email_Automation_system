@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 const imaps = require('imap-simple');
 const Email = require('../models/Email');
 const { upsertEmailEmbedding } = require('../vectorStore');
+const { simpleParser } = require('mailparser');
 
 const config = {
     imap: {
@@ -11,7 +12,8 @@ const config = {
         port: 993,
         tls: true,
         tlsOptions: { rejectUnauthorized: false },
-        authTimeout: 3000
+        authTimeout: 10000,
+        connTimeout: 10000
     },
     smtp: {
         service: 'gmail',
@@ -44,35 +46,69 @@ const fetchEmails = async (searchCriteria = ['UNSEEN']) => {
     try {
         const connection = await imaps.connect(config);
         await connection.openBox('INBOX');
+
         const searchOptions = {
-            bodies: ['HEADER', 'TEXT'],
+            bodies: [''],
+            struct: true,
             markSeen: false
         };
 
         const messages = await connection.search(searchCriteria, searchOptions);
 
-        const emails = messages.map(message => {
-            const parts = message.parts;
-            const headerPart = parts.find(part => part.which === 'HEADER');
-            const textPart = parts.find(part => part.which === 'TEXT');
+        const emails = [];
 
-            return {
+        for (const message of messages) {
+            const all = message.parts.find(part => part.which === '');
+            const raw = all?.body;
+
+            if (!raw) continue;
+
+            const parsed = await simpleParser(raw);
+
+            let cleanText = parsed.text;
+
+if (!cleanText && parsed.html) {
+    cleanText = parsed.html;
+
+    // Remove style and script blocks completely
+    cleanText = cleanText.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+    cleanText = cleanText.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+
+    // Remove HTML tags
+    cleanText = cleanText.replace(/<[^>]*>/g, '');
+
+    // Remove CSS-like leftovers
+    cleanText = cleanText.replace(/\{[^}]*\}/g, '');
+
+    // Remove excessive whitespace
+    cleanText = cleanText.replace(/\s+/g, ' ').trim();
+}
+
+if (!cleanText || cleanText.length < 5) {
+    cleanText = 'No readable content';
+}
+
+
+            emails.push({
                 messageId: message.attributes.uid.toString(),
-                subject: headerPart.body.subject ? headerPart.body.subject[0] : '(No Subject)',
-                from: headerPart.body.from ? headerPart.body.from[0] : '(Unknown)',
-                date: headerPart.body.date ? new Date(headerPart.body.date[0]) : new Date(),
-                body: textPart ? textPart.body : '(No Body)',
+                subject: parsed.subject || '(No Subject)',
+                from: parsed.from?.text || '(Unknown)',
+                date: parsed.date || new Date(),
+                snippet: cleanText.substring(0, 200).trim(),
                 provider: 'gmail'
-            };
-        });
+            });
+        }
 
         connection.end();
         return emails;
+
     } catch (error) {
         console.error('Error fetching emails:', error);
         throw error;
     }
 };
+
+
 
 const syncEmails = async () => {
     try {

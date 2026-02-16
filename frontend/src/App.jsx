@@ -1,16 +1,28 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DashboardOne from "./pages/dashboardOne";
-import DashboardTwo from "./pages/dashboardTwo";
-import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import DashboardLayout from "./layout/DashboardLayout";
+import Inbox from "./pages/Inbox";
+import Tasks from "./pages/Tasks";
+import FollowUps from "./pages/FollowUps";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
+import DevTools from "./pages/DevTools";
+
 
 function App() {
   return (
     <BrowserRouter>
-      <h1>Smart Email Solutions</h1>
-
       <Routes>
-        <Route path="/" element={<DashboardOne />} />
-        <Route path="/dashboard-two" element={<DashboardTwo />} />
+        <Route path="/" element={<Navigate to="/dashboard/inbox" />} />
+
+        <Route path="dev-tools" element={<DevTools />} />
+
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="inbox" element={<Inbox />} />
+          <Route path="tasks" element={<Tasks />} />
+          <Route path="followups" element={<FollowUps />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

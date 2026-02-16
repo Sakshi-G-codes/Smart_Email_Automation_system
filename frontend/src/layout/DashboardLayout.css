@@ -1,0 +1,52 @@
+.dashboard {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 220px;
+  background: #111827;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  color: white;
+  font-weight: bold;
+}
+
+.main-content {
+  flex: 1;
+  background: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  background: white;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.page-content {
+  padding: 20px;
+  color: #111827;
+}
