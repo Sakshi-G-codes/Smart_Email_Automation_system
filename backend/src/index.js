@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const connectDB = require('./db');
 
+const { generateReply } = require('./services/aiService');
 
 
 const { sendEmail, fetchEmails, syncEmails } = require('./services/emailService');
@@ -47,6 +48,23 @@ app.get('/test/email/sync', async (req, res) => {
     res.json(result);
   } catch (error) {
     res.status(500).send({ error: error.message });
+  }
+});
+
+app.post('/ai/reply', async (req, res) => {
+  try {
+    const { subject, content } = req.body;
+
+    if (!subject || !content) {
+      return res.status(400).json({ error: "Subject and content required" });
+    }
+
+    const reply = await generateReply(subject, content);
+
+    res.json({ reply });
+  } catch (error) {
+    console.error("AI Reply Error:", error);
+    res.status(500).json({ error: "Failed to generate reply" });
   }
 });
 

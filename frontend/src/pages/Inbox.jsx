@@ -6,6 +6,9 @@ export default function Inbox() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [replies, setReplies] = useState({});
+
+
   useEffect(() => {
     fetchEmailsTest()
       .then((data) => {
@@ -76,6 +79,31 @@ export default function Inbox() {
 
   if (loading) return <p>Loading emails...</p>;
   if (error) return <p>{error}</p>;
+
+  const generateAIReply = async (email, index) => {
+  try {
+    const response = await fetch("http://localhost:3000/ai/reply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        subject: email.subject,
+        content: email.snippet || "",
+      }),
+    });
+
+    const data = await response.json();
+
+    setReplies((prev) => ({
+      ...prev,
+      [index]: data.reply,
+    }));
+  } catch (error) {
+    console.error("Failed to generate reply", error);
+  }
+};
+
 
   return (
     <div>
@@ -194,13 +222,7 @@ if (summary.length > 120) {
                 <p><strong>Sentiment:</strong> {sentiment}</p>
 
                 <button
-  onClick={() => {
-    const reply =
-      `Hi,\n\nThank you for your email regarding "${email.subject}". ` +
-      `We have received your message and will get back to you shortly.\n\nBest regards,\nSmart Email Assistant`;
-
-    alert(reply);
-  }}
+  onClick={() => generateAIReply(email, index)}
   style={{
     marginTop: "10px",
     padding: "6px 12px",
@@ -213,6 +235,22 @@ if (summary.length > 120) {
 >
   Generate AI Reply
 </button>
+
+{replies[index] && (
+  <div
+    style={{
+      marginTop: "10px",
+      padding: "10px",
+      background: "#f3f4f6",
+      borderRadius: "6px",
+      whiteSpace: "pre-line",
+    }}
+  >
+    <strong>AI Draft:</strong>
+    <p>{replies[index]}</p>
+  </div>
+)}
+
 
               </li>
             );
