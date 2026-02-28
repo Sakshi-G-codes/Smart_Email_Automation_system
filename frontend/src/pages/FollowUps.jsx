@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./FollowUps.css";
 
 export default function FollowUps() {
   const [followUps, setFollowUps] = useState([]);
@@ -9,26 +10,20 @@ export default function FollowUps() {
   }, []);
 
   return (
-    <div>
-      <h2>Follow-Ups</h2>
+    <div className="followups-container">
+      <h2 className="followups-title">Follow Ups Required</h2>
 
       {followUps.length === 0 ? (
-        <p>No follow-ups detected.</p>
+        <p>No follow ups detected.</p>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="followups-list">
           {followUps.map((item, index) => (
-            <li
-              key={index}
-              style={{
-                marginBottom: "12px",
-                padding: "10px",
-                background: "#fff3cd",
-                borderRadius: "6px",
-              }}
-            >
+            <li key={index} className="followup-card">
               <strong>{item.subject}</strong>
-              <p>From: {item.from}</p>
-              <p>Status: {item.status}</p>
+              <div className="followup-meta">From: {item.from}</div>
+              <div className="followup-meta">Status: {item.status}</div>
+
+              <span className="followup-badge">Needs Attention</span>
             </li>
           ))}
         </ul>

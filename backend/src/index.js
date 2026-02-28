@@ -5,17 +5,19 @@ const connectDB = require('./db');
 
 const { generateReply } = require('./services/aiService');
 
-
 const { sendEmail, fetchEmails, syncEmails } = require('./services/emailService');
 
+const authRoutes = require("./routes/auth");
 
-
+const protect = require("./middleware/authMiddleware");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/auth", authRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -51,7 +53,7 @@ app.get('/test/email/sync', async (req, res) => {
   }
 });
 
-app.post('/ai/reply', async (req, res) => {
+app.post('/ai/reply', protect, async (req, res) => {
   try {
     const { subject, content } = req.body;
 

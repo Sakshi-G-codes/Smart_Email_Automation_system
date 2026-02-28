@@ -1,0 +1,42 @@
+.followups-container {
+  padding: 30px;
+}
+
+.followups-title {
+  font-size: 26px;
+  margin-bottom: 25px;
+}
+
+.followups-list {
+  list-style: none;
+  padding: 0;
+}
+
+.followup-card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transition: 0.3s ease;
+}
+
+.followup-card:hover {
+  transform: translateY(-4px);
+}
+
+.followup-meta {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.followup-badge {
+  display: inline-block;
+  margin-top: 10px;
+  background: #f59e0b;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: black;
+}

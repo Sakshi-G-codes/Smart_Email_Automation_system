@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchEmailsTest } from "../api";
+import "./Inbox.css";
 
 export default function Inbox() {
   const [emails, setEmails] = useState([]);
@@ -106,157 +107,94 @@ export default function Inbox() {
 
 
   return (
-    <div>
-      <h2>Inbox</h2>
+  <div className="inbox-container">
+    <h2 className="inbox-title">Inbox</h2>
 
-      {emails.length === 0 ? (
-        <p>No emails found.</p>
-      ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {emails.map((email, index) => {
-            let priorityLabel = "Low";
-            let priorityColor = "green";
+    {emails.length === 0 ? (
+      <p>No emails found.</p>
+    ) : (
+      <ul className="email-list">
+        {emails.map((email, index) => {
+          let priorityLabel = "Low";
+          let priorityColor = "green";
 
-            if (email.priorityScore >= 4) {
-              priorityLabel = "High";
-              priorityColor = "red";
-            } else if (email.priorityScore === 3) {
-              priorityLabel = "Medium";
-              priorityColor = "orange";
-            }
+          if (email.priorityScore >= 4) {
+            priorityLabel = "High";
+            priorityColor = "red";
+          } else if (email.priorityScore === 3) {
+            priorityLabel = "Medium";
+            priorityColor = "orange";
+          }
 
-            const content =
-              (email.subject || "") +
-              " " +
-              (email.snippet || "") +
-              " " +
-              (email.text || "") +
-              " " +
-              (email.body || "");
+          const content =
+            (email.subject || "") +
+            " " +
+            (email.snippet || "") +
+            " " +
+            (email.text || "") +
+            " " +
+            (email.body || "");
 
-            // Sentiment detection
-            let sentiment = "Neutral";
-            let cardBackground = "white";
+          let sentiment = "Neutral";
+          const lower = content.toLowerCase();
 
-            const lower = content.toLowerCase();
+          if (
+            lower.includes("urgent") ||
+            lower.includes("issue") ||
+            lower.includes("problem") ||
+            lower.includes("complaint") ||
+            lower.includes("angry") ||
+            lower.includes("not happy")
+          ) {
+            sentiment = "Negative";
+          }
 
-            if (
-              lower.includes("urgent") ||
-              lower.includes("issue") ||
-              lower.includes("problem") ||
-              lower.includes("complaint") ||
-              lower.includes("angry") ||
-              lower.includes("not happy")
-            ) {
-              sentiment = "Negative";
-              cardBackground = "#fee2e2";
-            }
+          let summary =
+            email.snippet || email.text || email.body || "";
 
-            // Proper summary extraction
-            let summary =
-  email.snippet ||
-  email.text ||
-  email.body ||
-  "";
+          summary = summary.replace(/<[^>]*>?/gm, "").trim();
 
+          if (!summary) summary = "No content available";
 
-// 🔹 Clean MIME headers
-summary = summary.replace(/Content-Type:[^\n]*/gi, "");
-summary = summary.replace(/Content-Transfer-Encoding:[^\n]*/gi, "");
-summary = summary.replace(/--=_Part_[^\n]*/gi, "");
+          if (summary.length > 120) {
+            summary = summary.substring(0, 120) + "...";
+          }
 
-// 🔹 Remove HTML tags
-summary = summary.replace(/<[^>]*>?/gm, "");
+          return (
+            <li key={index} className="email-card">
+              <div className="email-header">
+                <strong>{email.subject || "No Subject"}</strong>
 
-// 🔹 Trim whitespace
-summary = summary.trim();
-
-if (!summary) {
-  summary = "No content available";
-}
-
-if (summary.length > 120) {
-  summary = summary.substring(0, 120) + "...";
-}
-
-
-            if (summary.length > 120) {
-              summary = summary.substring(0, 120) + "...";
-            }
-
-            return (
-              <li
-                key={index}
-                style={{
-                  marginBottom: "15px",
-                  padding: "12px",
-                  background: cardBackground,
-                  borderRadius: "6px",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
+                <span
+                  className="priority-badge"
+                  style={{ background: priorityColor }}
                 >
-                  <strong>{email.subject || "No Subject"}</strong>
+                  {priorityLabel}
+                </span>
+              </div>
 
-                  <span
-                    style={{
-                      background: priorityColor,
-                      color: "white",
-                      padding: "4px 8px",
-                      borderRadius: "12px",
-                      fontSize: "12px",
-                    }}
-                  >
-                    {priorityLabel}
-                  </span>
+              <p>From: {email.from || "Unknown"}</p>
+              <p><strong>Summary:</strong> {summary}</p>
+              <p><strong>Sentiment:</strong> {sentiment}</p>
+
+              <button
+                onClick={() => generateAIReply(email, index)}
+                className="ai-button"
+              >
+                Generate AI Reply
+              </button>
+
+              {replies[index] && (
+                <div className="ai-draft">
+                  <strong>AI Draft:</strong>
+                  <p>{replies[index]}</p>
                 </div>
-
-                <p>From: {email.from || "Unknown"}</p>
-                <p><strong>Summary:</strong> {summary}</p>
-                <p><strong>Sentiment:</strong> {sentiment}</p>
-
-                <button
-  onClick={() => generateAIReply(email, index)}
-  style={{
-    marginTop: "10px",
-    padding: "6px 12px",
-    background: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  }}
->
-  Generate AI Reply
-</button>
-
-{replies[index] && (
-  <div
-    style={{
-      marginTop: "10px",
-      padding: "10px",
-      background: "#f3f4f6",
-      borderRadius: "6px",
-      whiteSpace: "pre-line",
-    }}
-  >
-    <strong>AI Draft:</strong>
-    <p>{replies[index]}</p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    )}
   </div>
-)}
-
-
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
+);
 }

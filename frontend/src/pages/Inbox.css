@@ -1,0 +1,66 @@
+.inbox-container {
+  padding: 40px;
+  background: #0f172a;
+  min-height: 100vh;
+  color: white;
+}
+
+.inbox-title {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.email-list {
+  list-style: none;
+  padding: 0;
+}
+
+.email-card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: 0.3s ease;
+}
+
+.email-card:hover {
+  transform: translateY(-4px);
+}
+
+.email-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.priority-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+}
+
+.ai-button {
+  margin-top: 12px;
+  padding: 8px 14px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.ai-button:hover {
+  background: #2563eb;
+}
+
+.ai-draft {
+  margin-top: 12px;
+  padding: 12px;
+  background: #111827;
+  border-radius: 8px;
+  white-space: pre-line;
+}

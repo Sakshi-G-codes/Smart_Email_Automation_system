@@ -36,9 +36,9 @@ export default function DashboardLayout() {
           <h3>Dashboard</h3>
 
           {/* 🔹 API Status Display */}
-          <span style={{ marginLeft: "auto", fontWeight: "bold" }}>
+          {/* <span style={{ marginLeft: "auto", fontWeight: "bold" }}>
             API: {apiStatus}
-          </span>
+          </span> */}
         </header>
 
         <div className="page-content">

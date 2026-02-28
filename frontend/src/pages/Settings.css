@@ -1,0 +1,31 @@
+.settings-container {
+  padding: 30px;
+}
+
+.settings-title {
+  font-size: 26px;
+  margin-bottom: 25px;
+}
+
+.settings-card {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  width: 300px;
+}
+
+.logout-btn {
+  margin-top: 15px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}

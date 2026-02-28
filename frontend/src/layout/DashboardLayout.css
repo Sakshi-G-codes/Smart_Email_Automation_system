@@ -1,12 +1,13 @@
 .dashboard {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;  
   font-family: Arial, sans-serif;
+  background: #0f172a;  
 }
 
 .sidebar {
   width: 220px;
-  background: #111827;
+  background: #152445;
   color: white;
   padding: 20px;
   display: flex;
@@ -35,18 +36,18 @@
 
 .main-content {
   flex: 1;
-  background: #f3f4f6;
+  background: #0f172a;   /* match dark theme */
   display: flex;
   flex-direction: column;
 }
 
 .topbar {
-  background: white;
+  background: #0f172a;
   padding: 15px 20px;
   border-bottom: 1px solid #ddd;
 }
 
 .page-content {
-  padding: 20px;
-  color: #111827;
+  padding: 30px;
+  color: white;
 }
